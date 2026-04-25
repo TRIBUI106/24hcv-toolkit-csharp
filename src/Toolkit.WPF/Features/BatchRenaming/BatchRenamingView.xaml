@@ -1,0 +1,90 @@
+<UserControl x:Class="Toolkit.WPF.Features.BatchRenaming.BatchRenamingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20" MaxWidth="1000">
+
+            <!-- Folder + spec -->
+            <Border Style="{StaticResource Card}" Margin="0,0,0,12">
+                <StackPanel>
+                    <TextBlock Text="Root Folder" Style="{StaticResource FieldLabel}"/>
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" Text="{Binding RootFolder, UpdateSourceTrigger=PropertyChanged}"
+                                 Margin="0,0,8,0"/>
+                        <Button Grid.Column="1" Content="Browse" Style="{StaticResource SecondaryButton}"
+                                Command="{Binding BrowseFolderCommand}"/>
+                    </Grid>
+
+                    <TextBlock Text="Naming Parameters" Style="{StaticResource FieldLabel}" FontSize="13" Margin="0,0,0,8"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                            <TextBlock Text="Mã định danh *" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding MaDinhDanh, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="0,0,8,0">
+                            <TextBlock Text="Mã phông" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding MaPhong, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Margin="0,0,8,0">
+                            <TextBlock Text="Mã mục lục" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding MaMucLuc, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="3">
+                            <TextBlock Text="Mã hồ sơ" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding MaHoSo, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                        <Button Content="Preview" Style="{StaticResource SecondaryButton}"
+                                Command="{Binding PreviewCommand}" Margin="0,0,8,0"/>
+                        <Button Content="Rename" Style="{StaticResource PrimaryButton}"
+                                Command="{Binding RenameCommand}"/>
+                    </StackPanel>
+
+                    <ProgressBar Value="{Binding ProgressPercent}" Maximum="100" Height="4"
+                                 Margin="0,10,0,4"
+                                 Visibility="{Binding IsRunning, Converter={StaticResource BoolToVisibility}}"/>
+                    <TextBlock Text="{Binding StatusMessage}" FontSize="12" Foreground="#64748B"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Folder name preview -->
+            <Border Style="{StaticResource Card}" Margin="0,0,0,12"
+                    Visibility="{Binding PreviewFolderName, Converter={StaticResource BoolToVisibility}}">
+                <StackPanel>
+                    <TextBlock Text="Folder Rename" Style="{StaticResource FieldLabel}"/>
+                    <TextBlock Text="{Binding PreviewFolderName}" FontSize="13" Foreground="#1E293B"/>
+                </StackPanel>
+            </Border>
+
+            <!-- File preview table -->
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="File Rename Preview" Style="{StaticResource FieldLabel}" Margin="0,0,0,8"/>
+                    <DataGrid ItemsSource="{Binding PreviewItems}" AutoGenerateColumns="False"
+                              CanUserAddRows="False" CanUserDeleteRows="False"
+                              HeadersVisibility="Column" GridLinesVisibility="Horizontal"
+                              BorderThickness="0" Background="Transparent" MaxHeight="400">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Subfolder"   Binding="{Binding Subfolder}" Width="200" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Current Name" Binding="{Binding OldName}"  Width="*"   IsReadOnly="True"/>
+                            <DataGridTextColumn Header="New Name"     Binding="{Binding NewName}"  Width="*"   IsReadOnly="True"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

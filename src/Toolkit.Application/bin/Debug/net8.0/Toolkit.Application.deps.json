@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "Toolkit.Application/1.0.0": {
+        "dependencies": {
+          "Toolkit.Domain": "1.0.0"
+        },
+        "runtime": {
+          "Toolkit.Application.dll": {}
+        }
+      },
+      "Toolkit.Domain/1.0.0": {
+        "runtime": {
+          "Toolkit.Domain.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Toolkit.Application/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Toolkit.Domain/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

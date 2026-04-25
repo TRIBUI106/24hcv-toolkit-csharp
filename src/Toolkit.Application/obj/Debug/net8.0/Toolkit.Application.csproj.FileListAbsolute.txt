@@ -1,0 +1,15 @@
+D:\Code\24hcv-toolkit-csharp\src\Toolkit.Application\bin\Debug\net8.0\Toolkit.Application.deps.json
+D:\Code\24hcv-toolkit-csharp\src\Toolkit.Application\bin\Debug\net8.0\Toolkit.Application.dll
+D:\Code\24hcv-toolkit-csharp\src\Toolkit.Application\bin\Debug\net8.0\Toolkit.Application.pdb
+D:\Code\24hcv-toolkit-csharp\src\Toolkit.Application\bin\Debug\net8.0\Toolkit.Domain.dll
+D:\Code\24hcv-toolkit-csharp\src\Toolkit.Application\bin\Debug\net8.0\Toolkit.Domain.pdb
+D:\Code\24hcv-toolkit-csharp\src\Toolkit.Application\obj\Debug\net8.0\Toolkit.Application.csproj.AssemblyReference.cache
+D:\Code\24hcv-toolkit-csharp\src\Toolkit.Application\obj\Debug\net8.0\Toolkit.Application.GeneratedMSBuildEditorConfig.editorconfig
+D:\Code\24hcv-toolkit-csharp\src\Toolkit.Application\obj\Debug\net8.0\Toolkit.Application.AssemblyInfoInputs.cache
+D:\Code\24hcv-toolkit-csharp\src\Toolkit.Application\obj\Debug\net8.0\Toolkit.Application.AssemblyInfo.cs
+D:\Code\24hcv-toolkit-csharp\src\Toolkit.Application\obj\Debug\net8.0\Toolkit.Application.csproj.CoreCompileInputs.cache
+D:\Code\24hcv-toolkit-csharp\src\Toolkit.Application\obj\Debug\net8.0\Toolkit..477EB68C.Up2Date
+D:\Code\24hcv-toolkit-csharp\src\Toolkit.Application\obj\Debug\net8.0\Toolkit.Application.dll
+D:\Code\24hcv-toolkit-csharp\src\Toolkit.Application\obj\Debug\net8.0\refint\Toolkit.Application.dll
+D:\Code\24hcv-toolkit-csharp\src\Toolkit.Application\obj\Debug\net8.0\Toolkit.Application.pdb
+D:\Code\24hcv-toolkit-csharp\src\Toolkit.Application\obj\Debug\net8.0\ref\Toolkit.Application.dll

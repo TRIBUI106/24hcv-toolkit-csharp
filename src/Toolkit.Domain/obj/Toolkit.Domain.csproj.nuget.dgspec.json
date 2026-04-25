@@ -1,0 +1,91 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\Code\\24hcv-toolkit-csharp\\src\\Toolkit.Domain\\Toolkit.Domain.csproj": {}
+  },
+  "projects": {
+    "D:\\Code\\24hcv-toolkit-csharp\\src\\Toolkit.Domain\\Toolkit.Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\Code\\24hcv-toolkit-csharp\\src\\Toolkit.Domain\\Toolkit.Domain.csproj",
+        "projectName": "Toolkit.Domain",
+        "projectPath": "D:\\Code\\24hcv-toolkit-csharp\\src\\Toolkit.Domain\\Toolkit.Domain.csproj",
+        "packagesPath": "C:\\Users\\TRIBUI106\\.nuget\\packages\\",
+        "outputPath": "D:\\Code\\24hcv-toolkit-csharp\\src\\Toolkit.Domain\\obj\\",
+        "projectStyle": "PackageReference",
+        "centralPackageVersionsManagementEnabled": true,
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\TRIBUI106\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "framework": "net8.0",
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.200"
+      },
+      "frameworks": {
+        "net8.0": {
+          "framework": "net8.0",
+          "targetAlias": "net8.0",
+          "centralPackageVersions": {
+            "CommunityToolkit.Mvvm": "8.3.2",
+            "coverlet.collector": "6.0.2",
+            "FluentAssertions": "6.12.1",
+            "Microsoft.Extensions.Hosting": "8.0.1",
+            "Microsoft.NET.Test.Sdk": "17.12.0",
+            "NSubstitute": "5.3.0",
+            "OpenCvSharp4": "4.10.0.20241108",
+            "OpenCvSharp4.runtime.win": "4.10.0.20241108",
+            "PdfSharpCore": "1.3.65",
+            "System.Drawing.Common": "8.0.0",
+            "Tesseract": "5.2.0",
+            "xunit": "2.9.2",
+            "xunit.runner.visualstudio": "2.8.2"
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.203/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

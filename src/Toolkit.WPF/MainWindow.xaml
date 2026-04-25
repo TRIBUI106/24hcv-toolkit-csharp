@@ -1,0 +1,92 @@
+<Window x:Class="Toolkit.WPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:nav="clr-namespace:Toolkit.WPF.Navigation"
+        xmlns:pdf="clr-namespace:Toolkit.WPF.Features.PdfAnalysis"
+        xmlns:rename="clr-namespace:Toolkit.WPF.Features.BatchRenaming"
+        xmlns:preproc="clr-namespace:Toolkit.WPF.Features.ImagePreprocessing"
+        xmlns:ocr="clr-namespace:Toolkit.WPF.Features.Ocr"
+        xmlns:train="clr-namespace:Toolkit.WPF.Features.OcrTraining"
+        Title="24HCV Toolkit" Height="720" Width="1100"
+        Background="{StaticResource SurfaceBrush}"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type pdf:PdfAnalysisViewModel}">
+            <pdf:PdfAnalysisView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type rename:BatchRenamingViewModel}">
+            <rename:BatchRenamingView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type preproc:ImagePreprocessingViewModel}">
+            <preproc:ImagePreprocessingView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type ocr:OcrViewModel}">
+            <ocr:OcrView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type train:OcrTrainingViewModel}">
+            <train:OcrTrainingView/>
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Sidebar -->
+        <Border Grid.Column="0" Background="{StaticResource SidebarBrush}">
+            <DockPanel>
+                <!-- App title -->
+                <Border DockPanel.Dock="Top" Padding="16,20,16,16"
+                        BorderBrush="#334155" BorderThickness="0,0,0,1">
+                    <StackPanel>
+                        <TextBlock Text="24HCV Toolkit" FontSize="16" FontWeight="Bold"
+                                   Foreground="White"/>
+                        <TextBlock Text="Document Processing" FontSize="11"
+                                   Foreground="#94A3B8" Margin="0,2,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Nav items -->
+                <StackPanel DockPanel.Dock="Top" Margin="8,12">
+                    <Button Content="📄  PDF Analysis"
+                            Style="{StaticResource NavButton}"
+                            Command="{Binding NavigateToPdfAnalysisCommand}"/>
+                    <Button Content="📁  Batch Renaming"
+                            Style="{StaticResource NavButton}"
+                            Command="{Binding NavigateToBatchRenamingCommand}"/>
+                    <Button Content="🖼️  Image Preprocessing"
+                            Style="{StaticResource NavButton}"
+                            Command="{Binding NavigateToPreprocessingCommand}"/>
+                    <Button Content="🔍  OCR Engine"
+                            Style="{StaticResource NavButton}"
+                            Command="{Binding NavigateToOcrCommand}"/>
+                    <Button Content="🧠  OCR Training"
+                            Style="{StaticResource NavButton}"
+                            Command="{Binding NavigateToOcrTrainingCommand}"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- Main content -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Top bar -->
+            <Border Grid.Row="0" Background="White"
+                    BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="0,0,0,1"
+                    Padding="20,14">
+                <TextBlock Text="{Binding CurrentPageTitle}"
+                           FontSize="18" FontWeight="SemiBold" Foreground="#1E293B"/>
+            </Border>
+
+            <!-- Page content (data-template driven) -->
+            <ContentControl Grid.Row="1" Content="{Binding CurrentPage}" Margin="0"/>
+        </Grid>
+    </Grid>
+</Window>
