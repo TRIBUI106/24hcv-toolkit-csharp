@@ -1,25 +1,22 @@
-global using Toolkit.Domain.ValueObjects;
-global using Toolkit.Domain.Enums;
-global using Toolkit.Domain.Models;
-global using Toolkit.Domain.PdfAnalysis;
-global using Toolkit.Domain.BatchRenaming;
-global using Toolkit.Domain.ImagePreprocessing;
-global using Toolkit.Domain.Ocr;
-global using Toolkit.Domain.OcrTraining;
-global using Toolkit.Application.Common.Interfaces;
-global using Toolkit.Application.PdfAnalysis.Handlers;
-global using Toolkit.Application.PdfAnalysis.Queries;
-global using Toolkit.Application.PdfAnalysis.Commands;
-global using Toolkit.Application.BatchRenaming.Handlers;
-global using Toolkit.Application.BatchRenaming.Queries;
-global using Toolkit.Application.BatchRenaming.Commands;
-global using Toolkit.Application.ImagePreprocessing.Handlers;
-global using Toolkit.Application.ImagePreprocessing.Commands;
-global using Toolkit.Application.Ocr.Handlers;
-global using Toolkit.Application.Ocr.Commands;
-global using Toolkit.Application.OcrTraining.Handlers;
-global using Toolkit.Application.OcrTraining.Commands;
-global using Toolkit.Application.OcrTraining.Queries;
-global using Toolkit.Application.OcrTraining.Interfaces;
+// Models - Common
+global using Toolkit.WPF.Models.Common;
+
+// Models - Feature areas
+global using Toolkit.WPF.Models.BatchRenaming;
+global using Toolkit.WPF.Models.ImagePreprocessing;
+global using Toolkit.WPF.Models.Ocr;
+global using Toolkit.WPF.Models.OcrTraining;
+global using Toolkit.WPF.Models.PdfAnalysis;
+
+// Services - Common
+global using Toolkit.WPF.Services.Common;
+
+// Services - Feature areas
+global using Toolkit.WPF.Services.BatchRenaming;
+global using Toolkit.WPF.Services.ImagePreprocessing;
+global using Toolkit.WPF.Services.Ocr;
+global using Toolkit.WPF.Services.OcrTraining;
+global using Toolkit.WPF.Services.PdfAnalysis;
+
 global using System.IO;
 global using WinForms = System.Windows.Forms;

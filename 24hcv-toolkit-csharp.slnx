@@ -1,12 +1,4 @@
 <Solution>
-  <Folder Name="/src/">
-    <Project Path="src/Toolkit.Application/Toolkit.Application.csproj" />
-    <Project Path="src/Toolkit.Domain/Toolkit.Domain.csproj" />
-    <Project Path="src/Toolkit.Infrastructure/Toolkit.Infrastructure.csproj" />
-    <Project Path="src/Toolkit.WPF/Toolkit.WPF.csproj" />
-  </Folder>
-  <Folder Name="/tests/">
-    <Project Path="tests/Toolkit.Application.Tests/Toolkit.Application.Tests.csproj" />
-    <Project Path="tests/Toolkit.Domain.Tests/Toolkit.Domain.Tests.csproj" />
-  </Folder>
+  <Folder Name="/src/" />
+  <Project Path="src/Toolkit.WPF/Toolkit.WPF.csproj" />
 </Solution>

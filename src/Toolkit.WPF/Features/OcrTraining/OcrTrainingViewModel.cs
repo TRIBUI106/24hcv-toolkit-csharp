@@ -6,35 +6,25 @@ namespace Toolkit.WPF.Features.OcrTraining;
 
 public sealed partial class OcrTrainingViewModel : ViewModelBase
 {
-    private readonly GenerateSyntheticDataHandler _generateHandler;
-    private readonly StartTrainingHandler _trainingHandler;
-    private readonly SplitDatasetHandler _splitHandler;
-    private readonly EvaluateModelHandler _evaluateHandler;
+    private readonly OcrTrainingService _service;
     private CancellationTokenSource? _cts;
 
     [ObservableProperty] private string _generateOutputDir = string.Empty;
-    [ObservableProperty] private int _sampleCount = 500;
-    [ObservableProperty] private string _fontList = "Arial, Times New Roman, Courier New";
-    [ObservableProperty] private string _datasetDirectory = string.Empty;
-    [ObservableProperty] private string _modelName = "vie_custom";
-    [ObservableProperty] private string _modelPath = string.Empty;
+    [ObservableProperty] private int    _sampleCount       = 500;
+    [ObservableProperty] private string _fontList          = "Arial, Times New Roman, Courier New";
+    [ObservableProperty] private string _datasetDirectory  = string.Empty;
+    [ObservableProperty] private string _modelName         = "vie_custom";
+    [ObservableProperty] private string _modelPath         = string.Empty;
     [ObservableProperty] private string _testDataDirectory = string.Empty;
-    [ObservableProperty] private string _evaluationResult = string.Empty;
-    [ObservableProperty] private bool _isRunning;
+    [ObservableProperty] private string _evaluationResult  = string.Empty;
+    [ObservableProperty] private bool   _isRunning;
     [ObservableProperty] private double _progressPercent;
-    [ObservableProperty] private string _statusMessage = "Ready";
-    [ObservableProperty] private string _trainingLog = string.Empty;
+    [ObservableProperty] private string _statusMessage     = "Ready";
+    [ObservableProperty] private string _trainingLog       = string.Empty;
 
-    public OcrTrainingViewModel(
-        GenerateSyntheticDataHandler generateHandler,
-        StartTrainingHandler trainingHandler,
-        SplitDatasetHandler splitHandler,
-        EvaluateModelHandler evaluateHandler)
+    public OcrTrainingViewModel(OcrTrainingService service)
     {
-        _generateHandler = generateHandler;
-        _trainingHandler = trainingHandler;
-        _splitHandler = splitHandler;
-        _evaluateHandler = evaluateHandler;
+        _service = service;
     }
 
     [RelayCommand]
@@ -57,7 +47,7 @@ public sealed partial class OcrTrainingViewModel : ViewModelBase
         var d = new System.Windows.Forms.OpenFileDialog
         {
             Filter = "Tesseract Model|*.traineddata",
-            Title = "Select trained model"
+            Title  = "Select trained model"
         };
         if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK) ModelPath = d.FileName;
     }
@@ -80,23 +70,22 @@ public sealed partial class OcrTrainingViewModel : ViewModelBase
             .ToList();
 
         _cts = new CancellationTokenSource();
-        IsRunning = true;
+        IsRunning     = true;
         StatusMessage = "Generating synthetic data...";
-        TrainingLog = string.Empty;
+        TrainingLog   = string.Empty;
 
         var reporter = new WpfProgressReporter(p =>
         {
             ProgressPercent = p.PercentComplete;
-            StatusMessage = $"[{p.CompletedItems}/{p.TotalItems}] {p.CurrentItemName}";
-            TrainingLog += $"{p.CurrentItemName}\n";
+            StatusMessage   = $"[{p.CompletedItems}/{p.TotalItems}] {p.CurrentItemName}";
+            TrainingLog    += $"{p.CurrentItemName}\n";
         });
 
-        var result = await _generateHandler.HandleAsync(
-            new GenerateSyntheticDataCommand(GenerateOutputDir, SampleCount, fonts),
-            reporter, _cts.Token);
+        var result = await _service.GenerateDataAsync(
+            GenerateOutputDir, SampleCount, fonts, reporter, _cts.Token);
 
-        IsRunning = false;
-        StatusMessage = result.IsSuccess
+        IsRunning       = false;
+        StatusMessage   = result.IsSuccess
             ? $"Generated {SampleCount} samples in {GenerateOutputDir}"
             : $"Error: {result.ErrorMessage}";
         ProgressPercent = 100;
@@ -108,20 +97,18 @@ public sealed partial class OcrTrainingViewModel : ViewModelBase
         if (string.IsNullOrWhiteSpace(DatasetDirectory) || string.IsNullOrWhiteSpace(ModelName)) return;
 
         _cts = new CancellationTokenSource();
-        IsRunning = true;
+        IsRunning     = true;
         StatusMessage = "Starting training...";
-        TrainingLog = string.Empty;
+        TrainingLog   = string.Empty;
 
         var reporter = new WpfProgressReporter(p =>
         {
             ProgressPercent = p.PercentComplete;
-            StatusMessage = p.StatusMessage ?? $"[{p.CompletedItems}/{p.TotalItems}] {p.CurrentItemName}";
-            TrainingLog += $"{p.CurrentItemName}\n";
+            StatusMessage   = p.StatusMessage ?? $"[{p.CompletedItems}/{p.TotalItems}] {p.CurrentItemName}";
+            TrainingLog    += $"{p.CurrentItemName}\n";
         });
 
-        var result = await _trainingHandler.HandleAsync(
-            new StartTrainingCommand(DatasetDirectory, ModelName),
-            reporter, _cts.Token);
+        var result = await _service.TrainAsync(DatasetDirectory, ModelName, reporter, _cts.Token);
 
         IsRunning = false;
 
@@ -145,11 +132,10 @@ public sealed partial class OcrTrainingViewModel : ViewModelBase
         if (string.IsNullOrWhiteSpace(ModelPath) || string.IsNullOrWhiteSpace(TestDataDirectory)) return;
 
         _cts = new CancellationTokenSource();
-        IsRunning = true;
+        IsRunning     = true;
         StatusMessage = "Evaluating model...";
 
-        var result = await _evaluateHandler.HandleAsync(
-            new EvaluateModelQuery(ModelPath, TestDataDirectory), _cts.Token);
+        var result = await _service.EvaluateAsync(ModelPath, TestDataDirectory, _cts.Token);
 
         IsRunning = false;
 

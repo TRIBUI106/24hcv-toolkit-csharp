@@ -7,7 +7,7 @@
         xmlns:preproc="clr-namespace:Toolkit.WPF.Features.ImagePreprocessing"
         xmlns:ocr="clr-namespace:Toolkit.WPF.Features.Ocr"
         xmlns:train="clr-namespace:Toolkit.WPF.Features.OcrTraining"
-        Title="24HCV Toolkit" Height="720" Width="1100"
+        Title="24HCV Toolkit" Height="900" Width="1600"
         Background="{StaticResource SurfaceBrush}"
         WindowStartupLocation="CenterScreen">
 
@@ -56,7 +56,7 @@
                             Command="{Binding NavigateToPdfAnalysisCommand}"/>
                     <Button Content="📁  Batch Renaming"
                             Style="{StaticResource NavButton}"
-                            Command="{Binding NavigateToBatchRenamingCommand}"/>
+                            Command="{Binding NavigateToBatchRenamingCommand}" Click="Button_Click"/>
                     <Button Content="🖼️  Image Preprocessing"
                             Style="{StaticResource NavButton}"
                             Command="{Binding NavigateToPreprocessingCommand}"/>

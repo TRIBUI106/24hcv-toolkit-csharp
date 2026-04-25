@@ -10,11 +10,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Toolkit.Application\Toolkit.Application.csproj" />
-    <ProjectReference Include="..\Toolkit.Infrastructure\Toolkit.Infrastructure.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="PdfSharpCore" />
+    <PackageReference Include="OpenCvSharp4" />
+    <PackageReference Include="OpenCvSharp4.runtime.win" />
+    <PackageReference Include="Tesseract" />
+    <PackageReference Include="System.Drawing.Common" />
   </ItemGroup>
 </Project>

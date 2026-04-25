@@ -7,25 +7,25 @@ namespace Toolkit.WPF.Features.ImagePreprocessing;
 
 public sealed partial class ImagePreprocessingViewModel : ViewModelBase
 {
-    private readonly PreprocessImagesHandler _handler;
+    private readonly ImagePreprocessingService _service;
     private CancellationTokenSource? _cts;
 
-    [ObservableProperty] private string _inputDirectory = string.Empty;
+    [ObservableProperty] private string _inputDirectory  = string.Empty;
     [ObservableProperty] private string _outputDirectory = string.Empty;
-    [ObservableProperty] private bool _deskew = true;
-    [ObservableProperty] private bool _denoise = true;
-    [ObservableProperty] private bool _applyClahe = true;
-    [ObservableProperty] private bool _applyOtsu;
-    [ObservableProperty] private int _targetDpi = 300;
-    [ObservableProperty] private bool _isRunning;
+    [ObservableProperty] private bool   _deskew          = true;
+    [ObservableProperty] private bool   _denoise         = true;
+    [ObservableProperty] private bool   _applyClahe      = true;
+    [ObservableProperty] private bool   _applyOtsu;
+    [ObservableProperty] private int    _targetDpi       = 300;
+    [ObservableProperty] private bool   _isRunning;
     [ObservableProperty] private double _progressPercent;
-    [ObservableProperty] private string _statusMessage = "Ready";
+    [ObservableProperty] private string _statusMessage   = "Ready";
 
     public ObservableCollection<ProcessedImageRow> Results { get; } = [];
 
-    public ImagePreprocessingViewModel(PreprocessImagesHandler handler)
+    public ImagePreprocessingViewModel(ImagePreprocessingService service)
     {
-        _handler = handler;
+        _service = service;
     }
 
     [RelayCommand]
@@ -54,22 +54,21 @@ public sealed partial class ImagePreprocessingViewModel : ViewModelBase
 
         var options = new PreprocessingOptions
         {
-            Deskew = Deskew,
-            Denoise = Denoise,
-            ApplyClahe = ApplyClahe,
-            ApplyOtsu = ApplyOtsu,
-            TargetDpi = TargetDpi
+            Deskew      = Deskew,
+            Denoise     = Denoise,
+            ApplyClahe  = ApplyClahe,
+            ApplyOtsu   = ApplyOtsu,
+            TargetDpi   = TargetDpi
         };
 
         var reporter = new WpfProgressReporter(p =>
         {
             ProgressPercent = p.PercentComplete;
-            StatusMessage = $"[{p.CompletedItems}/{p.TotalItems}] {p.CurrentItemName}";
+            StatusMessage   = $"[{p.CompletedItems}/{p.TotalItems}] {p.CurrentItemName}";
         });
 
-        var result = await _handler.HandleAsync(
-            new PreprocessImagesCommand(InputDirectory, OutputDirectory, options),
-            reporter, _cts.Token);
+        var result = await _service.ProcessAsync(
+            InputDirectory, OutputDirectory, options, reporter, ct: _cts.Token);
 
         IsRunning = false;
 
@@ -77,7 +76,7 @@ public sealed partial class ImagePreprocessingViewModel : ViewModelBase
         {
             foreach (var img in result.Value!)
                 Results.Add(new ProcessedImageRow(img));
-            StatusMessage = $"Done — {result.Value.Count} image(s) processed.";
+            StatusMessage   = $"Done — {result.Value.Count} image(s) processed.";
             ProgressPercent = 100;
         }
         else
@@ -94,14 +93,14 @@ public sealed partial class ImagePreprocessingViewModel : ViewModelBase
     [RelayCommand]
     private void Cancel() => _cts?.Cancel();
 
-    partial void OnIsRunningChanged(bool value) => ProcessCommand.NotifyCanExecuteChanged();
-    partial void OnInputDirectoryChanged(string value) => ProcessCommand.NotifyCanExecuteChanged();
+    partial void OnIsRunningChanged(bool value)     => ProcessCommand.NotifyCanExecuteChanged();
+    partial void OnInputDirectoryChanged(string value)  => ProcessCommand.NotifyCanExecuteChanged();
     partial void OnOutputDirectoryChanged(string value) => ProcessCommand.NotifyCanExecuteChanged();
 }
 
 public sealed class ProcessedImageRow(ProcessedImage img)
 {
-    public string FileName   => System.IO.Path.GetFileName(img.OutputPath.Value);
-    public string Steps      => string.Join(", ", img.AppliedSteps);
-    public long ProcessingMs => img.ProcessingTimeMs;
+    public string FileName    => System.IO.Path.GetFileName(img.OutputPath.Value);
+    public string Steps       => string.Join(", ", img.AppliedSteps);
+    public long   ProcessingMs => img.ProcessingTimeMs;
 }

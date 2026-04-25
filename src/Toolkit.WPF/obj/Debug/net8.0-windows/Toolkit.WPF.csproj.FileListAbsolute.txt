@@ -64,12 +64,6 @@ D:\Code\24hcv-toolkit-csharp\src\Toolkit.WPF\bin\Debug\net8.0-windows\runtimes\w
 D:\Code\24hcv-toolkit-csharp\src\Toolkit.WPF\bin\Debug\net8.0-windows\runtimes\win-x86\native\OpenCvSharpExtern.dll
 D:\Code\24hcv-toolkit-csharp\src\Toolkit.WPF\bin\Debug\net8.0-windows\runtimes\win-x86\native\opencv_videoio_ffmpeg4100.dll
 D:\Code\24hcv-toolkit-csharp\src\Toolkit.WPF\bin\Debug\net8.0-windows\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.dll
-D:\Code\24hcv-toolkit-csharp\src\Toolkit.WPF\bin\Debug\net8.0-windows\Toolkit.Application.dll
-D:\Code\24hcv-toolkit-csharp\src\Toolkit.WPF\bin\Debug\net8.0-windows\Toolkit.Domain.dll
-D:\Code\24hcv-toolkit-csharp\src\Toolkit.WPF\bin\Debug\net8.0-windows\Toolkit.Infrastructure.dll
-D:\Code\24hcv-toolkit-csharp\src\Toolkit.WPF\bin\Debug\net8.0-windows\Toolkit.Application.pdb
-D:\Code\24hcv-toolkit-csharp\src\Toolkit.WPF\bin\Debug\net8.0-windows\Toolkit.Infrastructure.pdb
-D:\Code\24hcv-toolkit-csharp\src\Toolkit.WPF\bin\Debug\net8.0-windows\Toolkit.Domain.pdb
 D:\Code\24hcv-toolkit-csharp\src\Toolkit.WPF\obj\Debug\net8.0-windows\App.baml
 D:\Code\24hcv-toolkit-csharp\src\Toolkit.WPF\obj\Debug\net8.0-windows\MainWindow.baml
 D:\Code\24hcv-toolkit-csharp\src\Toolkit.WPF\obj\Debug\net8.0-windows\Toolkit.WPF.g.resources
@@ -83,3 +77,4 @@ D:\Code\24hcv-toolkit-csharp\src\Toolkit.WPF\obj\Debug\net8.0-windows\refint\Too
 D:\Code\24hcv-toolkit-csharp\src\Toolkit.WPF\obj\Debug\net8.0-windows\Toolkit.WPF.pdb
 D:\Code\24hcv-toolkit-csharp\src\Toolkit.WPF\obj\Debug\net8.0-windows\Toolkit.WPF.genruntimeconfig.cache
 D:\Code\24hcv-toolkit-csharp\src\Toolkit.WPF\obj\Debug\net8.0-windows\ref\Toolkit.WPF.dll
+D:\Code\24hcv-toolkit-csharp\src\Toolkit.WPF\obj\Debug\net8.0-windows\Toolkit.WPF.sourcelink.json

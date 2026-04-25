@@ -10,8 +10,10 @@
         "dependencies": {
           "CommunityToolkit.Mvvm": "8.3.2",
           "Microsoft.Extensions.Hosting": "8.0.1",
-          "Toolkit.Application": "1.0.0",
-          "Toolkit.Infrastructure": "1.0.0"
+          "OpenCvSharp4": "4.10.0.20241108",
+          "OpenCvSharp4.runtime.win": "4.10.0.20241108",
+          "PdfSharpCore": "1.3.65",
+          "Tesseract": "5.2.0"
         },
         "runtime": {
           "Toolkit.WPF.dll": {}
@@ -481,41 +483,6 @@
             "fileVersion": "5.2.0.0"
           }
         }
-      },
-      "Toolkit.Application/1.0.0": {
-        "dependencies": {
-          "Toolkit.Domain": "1.0.0"
-        },
-        "runtime": {
-          "Toolkit.Application.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
-          }
-        }
-      },
-      "Toolkit.Domain/1.0.0": {
-        "runtime": {
-          "Toolkit.Domain.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
-          }
-        }
-      },
-      "Toolkit.Infrastructure/1.0.0": {
-        "dependencies": {
-          "Microsoft.Extensions.Hosting": "8.0.1",
-          "OpenCvSharp4": "4.10.0.20241108",
-          "OpenCvSharp4.runtime.win": "4.10.0.20241108",
-          "PdfSharpCore": "1.3.65",
-          "Tesseract": "5.2.0",
-          "Toolkit.Application": "1.0.0"
-        },
-        "runtime": {
-          "Toolkit.Infrastructure.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
-          }
-        }
       }
     }
   },
@@ -776,21 +743,6 @@
       "sha512": "sha512-YB7feJlrTWSXtK8+WaCcseGSPK/1r2d2FWeKGyndlrPwYClrzTlCoHD4/oQEUjKafmpkWlhTZZ7pxiRJYZgj6w==",
       "path": "tesseract/5.2.0",
       "hashPath": "tesseract.5.2.0.nupkg.sha512"
-    },
-    "Toolkit.Application/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "Toolkit.Domain/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "Toolkit.Infrastructure/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
     }
   }
 }

@@ -7,29 +7,26 @@ namespace Toolkit.WPF.Features.Ocr;
 
 public sealed partial class OcrViewModel : ViewModelBase
 {
-    private readonly RunOcrHandler _handler;
+    private readonly OcrService _service;
     private CancellationTokenSource? _cts;
 
-    [ObservableProperty] private string _imagePaths = string.Empty;
-    [ObservableProperty] private OcrEngineMode _engineMode = OcrEngineMode.LstmOnly;
-    [ObservableProperty] private PageSegmentationMode _psm = PageSegmentationMode.Auto;
-    [ObservableProperty] private bool _useVietnamese = true;
-    [ObservableProperty] private bool _useEnglish;
-    [ObservableProperty] private bool _isRunning;
-    [ObservableProperty] private double _progressPercent;
-    [ObservableProperty] private string _statusMessage = "Ready";
+    [ObservableProperty] private string               _imagePaths      = string.Empty;
+    [ObservableProperty] private OcrEngineMode        _engineMode      = OcrEngineMode.LstmOnly;
+    [ObservableProperty] private PageSegmentationMode _psm             = PageSegmentationMode.Auto;
+    [ObservableProperty] private bool                 _useVietnamese   = true;
+    [ObservableProperty] private bool                 _useEnglish;
+    [ObservableProperty] private bool                 _isRunning;
+    [ObservableProperty] private double               _progressPercent;
+    [ObservableProperty] private string               _statusMessage   = "Ready";
 
     public ObservableCollection<OcrResultRow> Results { get; } = [];
 
-    public IReadOnlyList<OcrEngineMode> EngineModes { get; } =
-        Enum.GetValues<OcrEngineMode>().ToList();
+    public IReadOnlyList<OcrEngineMode>        EngineModes { get; } = Enum.GetValues<OcrEngineMode>().ToList();
+    public IReadOnlyList<PageSegmentationMode> PsmModes    { get; } = Enum.GetValues<PageSegmentationMode>().ToList();
 
-    public IReadOnlyList<PageSegmentationMode> PsmModes { get; } =
-        Enum.GetValues<PageSegmentationMode>().ToList();
-
-    public OcrViewModel(RunOcrHandler handler)
+    public OcrViewModel(OcrService service)
     {
-        _handler = handler;
+        _service = service;
     }
 
     [RelayCommand]
@@ -38,8 +35,8 @@ public sealed partial class OcrViewModel : ViewModelBase
         var dialog = new System.Windows.Forms.OpenFileDialog
         {
             Multiselect = true,
-            Filter = "Images|*.png;*.jpg;*.jpeg;*.tif;*.tiff;*.bmp",
-            Title = "Select images to OCR"
+            Filter      = "Images|*.png;*.jpg;*.jpeg;*.tif;*.tiff;*.bmp",
+            Title       = "Select images to OCR"
         };
         if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             ImagePaths = string.Join(Environment.NewLine, dialog.FileNames);
@@ -58,7 +55,7 @@ public sealed partial class OcrViewModel : ViewModelBase
 
         var langs = new List<string>();
         if (UseVietnamese) langs.Add("vie");
-        if (UseEnglish) langs.Add("eng");
+        if (UseEnglish)    langs.Add("eng");
         if (langs.Count == 0) langs.Add("vie");
 
         var config = new OcrConfiguration(langs, EngineMode, Psm);
@@ -71,10 +68,10 @@ public sealed partial class OcrViewModel : ViewModelBase
         var reporter = new WpfProgressReporter(p =>
         {
             ProgressPercent = p.PercentComplete;
-            StatusMessage = $"[{p.CompletedItems}/{p.TotalItems}] {p.CurrentItemName}";
+            StatusMessage   = $"[{p.CompletedItems}/{p.TotalItems}] {p.CurrentItemName}";
         });
 
-        var result = await _handler.HandleAsync(new RunOcrCommand(paths, config), reporter, _cts.Token);
+        var result = await _service.RunAsync(paths, config, reporter, _cts.Token);
 
         IsRunning = false;
 
@@ -82,7 +79,7 @@ public sealed partial class OcrViewModel : ViewModelBase
         {
             foreach (var r in result.Value!)
                 Results.Add(new OcrResultRow(r));
-            StatusMessage = $"Done — {result.Value.Count} image(s) processed.";
+            StatusMessage   = $"Done — {result.Value.Count} image(s) processed.";
             ProgressPercent = 100;
         }
         else
@@ -96,14 +93,14 @@ public sealed partial class OcrViewModel : ViewModelBase
     [RelayCommand]
     private void Cancel() => _cts?.Cancel();
 
-    partial void OnIsRunningChanged(bool value) => RunCommand.NotifyCanExecuteChanged();
+    partial void OnIsRunningChanged(bool value)    => RunCommand.NotifyCanExecuteChanged();
     partial void OnImagePathsChanged(string value) => RunCommand.NotifyCanExecuteChanged();
 }
 
 public sealed class OcrResultRow(OcrResult result)
 {
-    public string FileName   => System.IO.Path.GetFileName(result.SourceImage.Value);
-    public string Text       => result.RecognizedText;
-    public float Confidence  => result.Confidence.Value;
-    public long ProcessingMs => result.ProcessingTimeMs;
+    public string FileName     => System.IO.Path.GetFileName(result.SourceImage.Value);
+    public string Text         => result.RecognizedText;
+    public float  Confidence   => result.Confidence.Value;
+    public long   ProcessingMs => result.ProcessingTimeMs;
 }
