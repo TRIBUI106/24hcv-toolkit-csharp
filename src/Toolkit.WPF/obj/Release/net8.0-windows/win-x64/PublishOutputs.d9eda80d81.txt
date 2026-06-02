@@ -1,0 +1,13 @@
+D:\Code\24hcv-toolkit-csharp\publish\Toolkit.WPF.pdb
+D:\Code\24hcv-toolkit-csharp\publish\x86\leptonica-1.82.0.dll
+D:\Code\24hcv-toolkit-csharp\publish\x86\tesseract50.dll
+D:\Code\24hcv-toolkit-csharp\publish\x64\leptonica-1.82.0.dll
+D:\Code\24hcv-toolkit-csharp\publish\x64\tesseract50.dll
+D:\Code\24hcv-toolkit-csharp\publish\D3DCompiler_47_cor3.dll
+D:\Code\24hcv-toolkit-csharp\publish\PenImc_cor3.dll
+D:\Code\24hcv-toolkit-csharp\publish\PresentationNative_cor3.dll
+D:\Code\24hcv-toolkit-csharp\publish\vcruntime140_cor3.dll
+D:\Code\24hcv-toolkit-csharp\publish\wpfgfx_cor3.dll
+D:\Code\24hcv-toolkit-csharp\publish\OpenCvSharpExtern.dll
+D:\Code\24hcv-toolkit-csharp\publish\opencv_videoio_ffmpeg4100_64.dll
+D:\Code\24hcv-toolkit-csharp\publish\Toolkit.WPF.exe
