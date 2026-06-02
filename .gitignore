@@ -5,6 +5,8 @@
 .vscode/
 .vs/
 publish/
+bin/
+obj/
 
 *.log
 *.tmp
