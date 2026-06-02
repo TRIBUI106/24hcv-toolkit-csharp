@@ -56,6 +56,7 @@ public sealed partial class BatchRenamingViewModel : ViewModelBase
             PreviewItems.Add(new FilePreviewRow(item.SubfolderName, item.OriginalFileName, item.NewFileName));
 
         StatusMessage = $"Preview sẵn sàng — {PreviewItems.Count} file(s) sẽ được đổi tên.";
+        RenameCommand.NotifyCanExecuteChanged();
     }
 
     private bool CanPreview() =>
