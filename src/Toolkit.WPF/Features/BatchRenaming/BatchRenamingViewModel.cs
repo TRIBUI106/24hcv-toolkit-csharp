@@ -9,20 +9,24 @@ public sealed partial class BatchRenamingViewModel : ViewModelBase
 {
     private readonly BatchRenamingService _service;
 
-    [ObservableProperty] private string _rootFolder    = string.Empty;
     [ObservableProperty] private string _maDinhDanh   = string.Empty;
     [ObservableProperty] private string _maPhong      = string.Empty;
     [ObservableProperty] private string _maMucLuc     = string.Empty;
-    [ObservableProperty] private string _previewFolderName = string.Empty;
     [ObservableProperty] private bool   _isRunning;
     [ObservableProperty] private double _progressPercent;
     [ObservableProperty] private string _statusMessage = "Ready";
 
+    public ObservableCollection<string>         RootFolders  { get; } = [];
     public ObservableCollection<FilePreviewRow> PreviewItems { get; } = [];
 
     public BatchRenamingViewModel(BatchRenamingService service)
     {
         _service = service;
+        RootFolders.CollectionChanged += (_, _) =>
+        {
+            PreviewCommand.NotifyCanExecuteChanged();
+            RenameCommand.NotifyCanExecuteChanged();
+        };
     }
 
     [RelayCommand]
@@ -33,8 +37,19 @@ public sealed partial class BatchRenamingViewModel : ViewModelBase
             Description = "Chọn folder root cần rename"
         };
         if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            RootFolder = dialog.SelectedPath;
+            AddFolder(dialog.SelectedPath);
     }
+
+    public void AddFolder(string path)
+    {
+        if (string.IsNullOrWhiteSpace(path)) return;
+        if (!System.IO.Directory.Exists(path)) return;
+        if (RootFolders.Contains(path)) return;
+        RootFolders.Add(path);
+    }
+
+    [RelayCommand]
+    private void RemoveFolder(string path) => RootFolders.Remove(path);
 
     [RelayCommand(CanExecute = nameof(CanPreview))]
     private void Preview()
@@ -42,26 +57,31 @@ public sealed partial class BatchRenamingViewModel : ViewModelBase
         var spec = BuildSpec();
         if (spec is null) return;
 
-        var result = _service.Preview(RootFolder, spec);
-        if (!result.IsSuccess)
+        PreviewItems.Clear();
+
+        foreach (var folder in RootFolders)
         {
-            StatusMessage = $"Error: {result.ErrorMessage}";
-            return;
+            var result = _service.Preview(folder, spec);
+            if (!result.IsSuccess)
+            {
+                StatusMessage = $"Error ({System.IO.Path.GetFileName(folder)}): {result.ErrorMessage}";
+                return;
+            }
+            foreach (var item in result.Value!.Files)
+                PreviewItems.Add(new FilePreviewRow(
+                    System.IO.Path.GetFileName(folder),
+                    item.SubfolderName,
+                    item.OriginalFileName,
+                    item.NewFileName));
         }
 
-        var preview = result.Value!;
-        PreviewFolderName = System.IO.Path.GetFileName(RootFolder);
-        PreviewItems.Clear();
-        foreach (var item in preview.Files)
-            PreviewItems.Add(new FilePreviewRow(item.SubfolderName, item.OriginalFileName, item.NewFileName));
-
-        StatusMessage = $"Preview sẵn sàng — {PreviewItems.Count} file(s) sẽ được đổi tên.";
+        StatusMessage = $"Preview sẵn sàng — {PreviewItems.Count} file(s) từ {RootFolders.Count} folder(s).";
         RenameCommand.NotifyCanExecuteChanged();
     }
 
     private bool CanPreview() =>
         !IsRunning &&
-        !string.IsNullOrWhiteSpace(RootFolder) &&
+        RootFolders.Count > 0 &&
         !string.IsNullOrWhiteSpace(MaDinhDanh) &&
         !string.IsNullOrWhiteSpace(MaPhong) &&
         !string.IsNullOrWhiteSpace(MaMucLuc);
@@ -73,7 +93,7 @@ public sealed partial class BatchRenamingViewModel : ViewModelBase
         if (spec is null) return;
 
         if (System.Windows.MessageBox.Show(
-            "Thao tác này sẽ đổi tên các subfolder và tất cả PDF bên trong.\n\nTiếp tục?",
+            $"Thao tác này sẽ đổi tên các subfolder và tất cả PDF bên trong {RootFolders.Count} folder(s).\n\nTiếp tục?",
             "Xác nhận Rename",
             System.Windows.MessageBoxButton.YesNo,
             System.Windows.MessageBoxImage.Question) != System.Windows.MessageBoxResult.Yes)
@@ -81,30 +101,35 @@ public sealed partial class BatchRenamingViewModel : ViewModelBase
 
         IsRunning     = true;
         StatusMessage = "Đang rename...";
+        ProgressPercent = 0;
 
-        var reporter = new WpfProgressReporter(p =>
+        var totalSucceeded = 0;
+
+        for (var i = 0; i < RootFolders.Count; i++)
         {
-            ProgressPercent = p.PercentComplete;
-            StatusMessage   = $"[{p.CompletedItems}/{p.TotalItems}] {p.CurrentItemName}";
-        });
+            var folder = RootFolders[i];
+            var reporter = new WpfProgressReporter(p =>
+            {
+                var basePercent = (double)i / RootFolders.Count * 100;
+                ProgressPercent = basePercent + p.PercentComplete / RootFolders.Count;
+                StatusMessage   = $"[{System.IO.Path.GetFileName(folder)}] [{p.CompletedItems}/{p.TotalItems}] {p.CurrentItemName}";
+            });
 
-        var result = _service.Rename(RootFolder, spec, reporter);
+            var result = _service.Rename(folder, spec, reporter);
+            if (!result.IsSuccess)
+            {
+                IsRunning     = false;
+                StatusMessage = $"Error ({System.IO.Path.GetFileName(folder)}): {result.ErrorMessage}";
+                return;
+            }
+            totalSucceeded += result.Value!.Count(r => r.WasRenamed);
+        }
 
         IsRunning       = false;
         ProgressPercent = 100;
-
-        if (result.IsSuccess)
-        {
-            var succeeded = result.Value!.Count(r => r.WasRenamed);
-            StatusMessage     = $"Hoàn tất — {succeeded} item(s) đã được đổi tên.";
-            PreviewItems.Clear();
-            PreviewFolderName = string.Empty;
-            RootFolder        = string.Empty;
-        }
-        else
-        {
-            StatusMessage = $"Error: {result.ErrorMessage}";
-        }
+        StatusMessage   = $"Hoàn tất — {totalSucceeded} item(s) đã được đổi tên từ {RootFolders.Count} folder(s).";
+        PreviewItems.Clear();
+        RootFolders.Clear();
     }
 
     private bool CanRename() => !IsRunning && PreviewItems.Count > 0;
@@ -127,15 +152,9 @@ public sealed partial class BatchRenamingViewModel : ViewModelBase
         RenameCommand.NotifyCanExecuteChanged();
     }
 
-    partial void OnRootFolderChanged(string value)
-    {
-        PreviewCommand.NotifyCanExecuteChanged();
-        RenameCommand.NotifyCanExecuteChanged();
-    }
-
     partial void OnMaDinhDanhChanged(string value) => PreviewCommand.NotifyCanExecuteChanged();
     partial void OnMaPhongChanged(string value)    => PreviewCommand.NotifyCanExecuteChanged();
     partial void OnMaMucLucChanged(string value)   => PreviewCommand.NotifyCanExecuteChanged();
 }
 
-public sealed record FilePreviewRow(string Subfolder, string OldName, string NewName);
+public sealed record FilePreviewRow(string RootFolder, string Subfolder, string OldName, string NewName);

@@ -7,20 +7,22 @@
             <!-- Folder + spec -->
             <Border Style="{StaticResource Card}" Margin="0,0,0,12">
                 <StackPanel>
-                    <TextBlock Text="Root Folder" Style="{StaticResource FieldLabel}"/>
-                    <Grid Margin="0,0,0,12">
+                    <TextBlock Text="Root Folders" Style="{StaticResource FieldLabel}"/>
+
+                    <!-- TextBox + Browse -->
+                    <Grid Margin="0,0,0,8">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBox Grid.Column="0"
-                                 Text="{Binding RootFolder, UpdateSourceTrigger=PropertyChanged}"
+                                 x:Name="RootFolderTextBox"
                                  Margin="0,0,8,0"
                                  AllowDrop="True"
                                  Drop="RootFolderTextBox_Drop"
                                  DragOver="RootFolderTextBox_DragOver"
-                                 x:Name="RootFolderTextBox"
-                                 ToolTip="Nhập đường dẫn hoặc kéo thả folder vào đây"/>
+                                 ToolTip="Nhập đường dẫn rồi nhấn Enter, hoặc kéo thả folder vào đây"
+                                 KeyDown="RootFolderTextBox_KeyDown"/>
                         <Button Grid.Column="1" Content="Browse" Style="{StaticResource SecondaryButton}"
                                 Command="{Binding BrowseFolderCommand}"/>
                     </Grid>
@@ -30,16 +32,43 @@
                             BorderBrush="#CBD5E1" BorderThickness="2" CornerRadius="8"
                             Background="#F8FAFC" Height="72" Margin="0,0,0,12"
                             AllowDrop="True"
-                            Drop="RootFolderTextBox_Drop"
+                            Drop="DropZone_Drop"
                             DragOver="DropZone_DragOver"
                             DragLeave="DropZone_DragLeave">
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
                             <TextBlock Text="📁" FontSize="20" VerticalAlignment="Center" Margin="0,0,8,0"/>
                             <TextBlock x:Name="DropZoneText"
-                                       Text="Kéo folder vào đây"
+                                       Text="Kéo một hoặc nhiều folder vào đây"
                                        FontSize="13" Foreground="#64748B" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Border>
+
+                    <!-- Folder list -->
+                    <ItemsControl ItemsSource="{Binding RootFolders}" Margin="0,0,0,12"
+                                  Visibility="{Binding RootFolders.Count, Converter={StaticResource BoolToVisibility}}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="6"
+                                        Background="#F1F5F9" Margin="0,0,0,4" Padding="8,6">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="{Binding}" FontSize="12"
+                                                   Foreground="#1E293B" VerticalAlignment="Center"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                        <Button Grid.Column="1" Content="✕" Margin="8,0,0,0"
+                                                FontSize="11" Padding="6,2"
+                                                Style="{StaticResource SecondaryButton}"
+                                                Command="{Binding DataContext.RemoveFolderCommand,
+                                                          RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
 
                     <TextBlock Text="Thông số đặt tên" Style="{StaticResource FieldLabel}" FontSize="13" Margin="0,0,0,8"/>
                     <Grid>
@@ -76,15 +105,6 @@
                 </StackPanel>
             </Border>
 
-            <!-- Folder name preview -->
-            <Border Style="{StaticResource Card}" Margin="0,0,0,12"
-                    Visibility="{Binding PreviewFolderName, Converter={StaticResource BoolToVisibility}}">
-                <StackPanel>
-                    <TextBlock Text="Folder đang xử lý" Style="{StaticResource FieldLabel}"/>
-                    <TextBlock Text="{Binding PreviewFolderName}" FontSize="13" Foreground="#1E293B"/>
-                </StackPanel>
-            </Border>
-
             <!-- File preview table -->
             <Border Style="{StaticResource Card}">
                 <StackPanel>
@@ -94,9 +114,10 @@
                               HeadersVisibility="Column" GridLinesVisibility="Horizontal"
                               BorderThickness="0" Background="Transparent" MaxHeight="400">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Hồ sơ (subfolder)" Binding="{Binding Subfolder}" Width="200" IsReadOnly="True"/>
-                            <DataGridTextColumn Header="Tên cũ"            Binding="{Binding OldName}"   Width="*"   IsReadOnly="True"/>
-                            <DataGridTextColumn Header="Tên mới"           Binding="{Binding NewName}"   Width="*"   IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Root folder"        Binding="{Binding RootFolder}" Width="160" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Hồ sơ (subfolder)"  Binding="{Binding Subfolder}"  Width="160" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Tên cũ"             Binding="{Binding OldName}"    Width="*"   IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Tên mới"            Binding="{Binding NewName}"    Width="*"   IsReadOnly="True"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </StackPanel>
