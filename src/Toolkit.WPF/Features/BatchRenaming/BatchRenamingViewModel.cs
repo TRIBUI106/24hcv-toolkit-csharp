@@ -84,12 +84,7 @@ public sealed partial class BatchRenamingViewModel : ViewModelBase
         RenameCommand.NotifyCanExecuteChanged();
     }
 
-    private bool CanPreview() =>
-        !IsRunning &&
-        RootFolders.Count > 0 &&
-        !string.IsNullOrWhiteSpace(MaDinhDanh) &&
-        !string.IsNullOrWhiteSpace(MaPhong) &&
-        !string.IsNullOrWhiteSpace(MaMucLuc);
+    private bool CanPreview() => !IsRunning && RootFolders.Count > 0;
 
     [RelayCommand(CanExecute = nameof(CanRename))]
     private void Rename()
@@ -157,9 +152,6 @@ public sealed partial class BatchRenamingViewModel : ViewModelBase
         RenameCommand.NotifyCanExecuteChanged();
     }
 
-    partial void OnMaDinhDanhChanged(string value) => PreviewCommand.NotifyCanExecuteChanged();
-    partial void OnMaPhongChanged(string value)    => PreviewCommand.NotifyCanExecuteChanged();
-    partial void OnMaMucLucChanged(string value)   => PreviewCommand.NotifyCanExecuteChanged();
 }
 
 public sealed record FilePreviewRow(string RootFolder, string Subfolder, string OldName, string NewName);
