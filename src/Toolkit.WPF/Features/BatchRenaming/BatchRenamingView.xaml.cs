@@ -22,5 +22,32 @@ public partial class BatchRenamingView : System.Windows.Controls.UserControl
 
         if (DataContext is BatchRenamingViewModel vm)
             vm.RootFolder = folder;
+
+        ResetDropZone();
+    }
+
+    private void DropZone_DragOver(object sender, System.Windows.DragEventArgs e)
+    {
+        var hasFolder = e.Data.GetDataPresent(System.Windows.DataFormats.FileDrop);
+        e.Effects = hasFolder ? System.Windows.DragDropEffects.Copy : System.Windows.DragDropEffects.None;
+        e.Handled = true;
+
+        DropZone.BorderBrush = hasFolder
+            ? new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(99, 102, 241))
+            : new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(239, 68, 68));
+        DropZone.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(238, 242, 255));
+        DropZoneText.Text = hasFolder ? "Thả folder vào đây" : "Chỉ chấp nhận folder";
+    }
+
+    private void DropZone_DragLeave(object sender, System.Windows.DragEventArgs e)
+    {
+        ResetDropZone();
+    }
+
+    private void ResetDropZone()
+    {
+        DropZone.BorderBrush  = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(203, 213, 225));
+        DropZone.Background   = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(248, 250, 252));
+        DropZoneText.Text     = "Kéo folder vào đây";
     }
 }

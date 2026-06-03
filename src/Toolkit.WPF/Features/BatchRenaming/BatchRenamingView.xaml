@@ -25,6 +25,22 @@
                                 Command="{Binding BrowseFolderCommand}"/>
                     </Grid>
 
+                    <!-- Drop zone -->
+                    <Border x:Name="DropZone"
+                            BorderBrush="#CBD5E1" BorderThickness="2" CornerRadius="8"
+                            Background="#F8FAFC" Height="72" Margin="0,0,0,12"
+                            AllowDrop="True"
+                            Drop="RootFolderTextBox_Drop"
+                            DragOver="DropZone_DragOver"
+                            DragLeave="DropZone_DragLeave">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
+                            <TextBlock Text="📁" FontSize="20" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBlock x:Name="DropZoneText"
+                                       Text="Kéo folder vào đây"
+                                       FontSize="13" Foreground="#64748B" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
                     <TextBlock Text="Thông số đặt tên" Style="{StaticResource FieldLabel}" FontSize="13" Margin="0,0,0,8"/>
                     <Grid>
                         <Grid.ColumnDefinitions>
