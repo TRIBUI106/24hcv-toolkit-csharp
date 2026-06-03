@@ -22,11 +22,6 @@ public sealed partial class BatchRenamingViewModel : ViewModelBase
     public BatchRenamingViewModel(BatchRenamingService service)
     {
         _service = service;
-        RootFolders.CollectionChanged += (_, _) =>
-        {
-            PreviewCommand.NotifyCanExecuteChanged();
-            RenameCommand.NotifyCanExecuteChanged();
-        };
     }
 
     [RelayCommand]
@@ -36,7 +31,10 @@ public sealed partial class BatchRenamingViewModel : ViewModelBase
         {
             Description = "Chọn folder root cần rename"
         };
-        if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+        var owner = new System.Windows.Forms.NativeWindow();
+        owner.AssignHandle(new System.Windows.Interop.WindowInteropHelper(
+            System.Windows.Application.Current.MainWindow).Handle);
+        if (dialog.ShowDialog(owner) == System.Windows.Forms.DialogResult.OK)
             AddFolder(dialog.SelectedPath);
     }
 
@@ -46,10 +44,17 @@ public sealed partial class BatchRenamingViewModel : ViewModelBase
         if (!System.IO.Directory.Exists(path)) return;
         if (RootFolders.Contains(path)) return;
         RootFolders.Add(path);
+        PreviewCommand.NotifyCanExecuteChanged();
+        RenameCommand.NotifyCanExecuteChanged();
     }
 
     [RelayCommand]
-    private void RemoveFolder(string path) => RootFolders.Remove(path);
+    private void RemoveFolder(string path)
+    {
+        RootFolders.Remove(path);
+        PreviewCommand.NotifyCanExecuteChanged();
+        RenameCommand.NotifyCanExecuteChanged();
+    }
 
     [RelayCommand(CanExecute = nameof(CanPreview))]
     private void Preview()
