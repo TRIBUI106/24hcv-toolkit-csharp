@@ -41,7 +41,7 @@ public sealed class RenameRule
             var m = FileNumberPattern.Match(nameWithoutExt);
             if (!m.Success) continue; // skip non-numeric files
 
-            var padded  = m.Value.PadLeft(4, '0');
+            var padded  = m.Value.PadLeft(3, '0');
             var newName = $"{newSubfolderName}-{padded}{ext}";
             results.Add((file, newName));
         }
