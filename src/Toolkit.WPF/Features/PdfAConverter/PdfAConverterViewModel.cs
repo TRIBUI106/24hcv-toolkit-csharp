@@ -47,9 +47,16 @@ public sealed partial class PdfAConverterViewModel : ViewModelBase
             OutputFolder = d.SelectedPath;
     }
 
+    public override void Dispose()
+    {
+        _cts?.Dispose();
+        base.Dispose();
+    }
+
     [RelayCommand(CanExecute = nameof(CanConvert))]
     private async Task ConvertAsync()
     {
+        _cts?.Dispose();
         _cts = new CancellationTokenSource();
         IsRunning = true;
         Results.Clear();
@@ -76,12 +83,13 @@ public sealed partial class PdfAConverterViewModel : ViewModelBase
 
         if (result.IsSuccess)
         {
-            foreach (var r in result.Value!)
+            var items = result.Value!;
+            foreach (var r in items)
                 Results.Add(new PdfAResultRow(r));
 
-            var converted = result.Value.Count(r => r.Status == ConversionStatus.Converted);
-            var skipped   = result.Value.Count(r => r.Status == ConversionStatus.Skipped);
-            var errors    = result.Value.Count(r => r.Status == ConversionStatus.Error);
+            var converted = items.Count(r => r.Status == ConversionStatus.Converted);
+            var skipped   = items.Count(r => r.Status == ConversionStatus.Skipped);
+            var errors    = items.Count(r => r.Status == ConversionStatus.Error);
             StatusMessage   = $"Done — {converted} converted, {skipped} skipped, {errors} error(s).";
             ProgressPercent = 100;
         }
