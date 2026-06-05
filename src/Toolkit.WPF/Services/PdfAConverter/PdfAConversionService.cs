@@ -33,7 +33,11 @@ public sealed class PdfAConversionService
             return OperationResult<IReadOnlyList<PdfAConversionResult>>.Success(
                 Array.Empty<PdfAConversionResult>());
 
-        if (!options.InPlace && !string.IsNullOrWhiteSpace(options.OutputDirectory))
+        if (!options.InPlace && string.IsNullOrWhiteSpace(options.OutputDirectory))
+            return OperationResult<IReadOnlyList<PdfAConversionResult>>.Failure(
+                "OutputDirectory must be specified when InPlace is false.");
+
+        if (!options.InPlace)
             Directory.CreateDirectory(options.OutputDirectory);
 
         var results   = new List<PdfAConversionResult>();
@@ -46,15 +50,14 @@ public sealed class PdfAConversionService
 
             if (IsAlreadyConverted(filePath))
             {
-                var skipped = new PdfAConversionResult
+                results.Add(new PdfAConversionResult
                 {
                     SourcePath = filePath,
                     OutputPath = filePath,
                     Status     = ConversionStatus.Skipped
-                };
-                lock (results) results.Add(skipped);
-                var s = Interlocked.Increment(ref completed);
-                progress.Report(new BatchProgress(files.Count, s, fileName));
+                });
+                completed++;
+                progress.Report(new BatchProgress(files.Count, completed, fileName));
                 continue;
             }
 
@@ -62,11 +65,25 @@ public sealed class PdfAConversionService
                 ? filePath
                 : Path.Combine(options.OutputDirectory, fileName);
 
-            var result = await _converter.ConvertAsync(filePath, outputPath, options, ct);
-            lock (results) results.Add(result);
+            if (!options.InPlace && File.Exists(outputPath))
+            {
+                results.Add(new PdfAConversionResult
+                {
+                    SourcePath   = filePath,
+                    OutputPath   = outputPath,
+                    Status       = ConversionStatus.Error,
+                    ErrorMessage = $"Output collision: '{fileName}' already exists in output directory."
+                });
+                completed++;
+                progress.Report(new BatchProgress(files.Count, completed, fileName));
+                continue;
+            }
 
-            var count = Interlocked.Increment(ref completed);
-            progress.Report(new BatchProgress(files.Count, count, fileName,
+            var result = await _converter.ConvertAsync(filePath, outputPath, options, ct);
+            results.Add(result);
+
+            completed++;
+            progress.Report(new BatchProgress(files.Count, completed, fileName,
                 result.Status == ConversionStatus.Error ? result.ErrorMessage : null));
         }
 
