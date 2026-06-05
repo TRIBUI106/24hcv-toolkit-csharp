@@ -17,5 +17,10 @@
     <PackageReference Include="OpenCvSharp4.runtime.win" />
     <PackageReference Include="Tesseract" />
     <PackageReference Include="System.Drawing.Common" />
+    <PackageReference Include="itext7" />
+    <PackageReference Include="itext7.bouncy-castle-adapter" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\sRGB2014.icc" />
   </ItemGroup>
 </Project>

@@ -9,6 +9,9 @@
     <PackageVersion Include="OpenCvSharp4" Version="4.10.0.20241108" />
     <PackageVersion Include="OpenCvSharp4.runtime.win" Version="4.10.0.20241108" />
     <PackageVersion Include="Tesseract" Version="5.2.0" />
+    <!-- PDF/A -->
+    <PackageVersion Include="itext7" Version="8.0.5" />
+    <PackageVersion Include="itext7.bouncy-castle-adapter" Version="8.0.5" />
     <!-- WPF -->
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.3.2" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
