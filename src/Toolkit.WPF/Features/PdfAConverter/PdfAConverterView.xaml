@@ -1,0 +1,109 @@
+<UserControl x:Class="Toolkit.WPF.Features.PdfAConverter.PdfAConverterView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20" MaxWidth="1000">
+
+            <!-- Input / Output -->
+            <Border Style="{StaticResource Card}" Margin="0,0,0,12">
+                <StackPanel>
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                            <TextBlock Text="Root Folder (contains PDFs)" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding RootFolder, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                        <Button Grid.Column="1" Content="Browse" Style="{StaticResource SecondaryButton}"
+                                Command="{Binding BrowseRootCommand}" VerticalAlignment="Bottom"/>
+                    </Grid>
+
+                    <CheckBox Content="In-place (overwrite source files)" IsChecked="{Binding InPlace}" Margin="0,0,0,8"/>
+
+                    <Grid>
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding InPlace}" Value="False">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                            <TextBlock Text="Output Folder" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding OutputFolder, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                        <Button Grid.Column="1" Content="Browse" Style="{StaticResource SecondaryButton}"
+                                Command="{Binding BrowseOutputCommand}" VerticalAlignment="Bottom"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Metadata overrides -->
+            <Border Style="{StaticResource Card}" Margin="0,0,0,12">
+                <StackPanel>
+                    <TextBlock Text="Metadata Overrides (leave blank to keep original)"
+                               Style="{StaticResource FieldLabel}" FontSize="13" Margin="0,0,0,10"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                            <TextBlock Text="Title" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding TitleOverride, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="0,0,8,0">
+                            <TextBlock Text="Author" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding AuthorOverride, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Subject" Style="{StaticResource FieldLabel}"/>
+                            <TextBox Text="{Binding SubjectOverride, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Actions -->
+            <Border Style="{StaticResource Card}" Margin="0,0,0,12">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <Button Content="Convert to PDF/A-2b" Style="{StaticResource PrimaryButton}"
+                                Command="{Binding ConvertCommand}" Margin="0,0,8,0"/>
+                        <Button Content="Cancel" Style="{StaticResource SecondaryButton}"
+                                Command="{Binding CancelCommand}"/>
+                    </StackPanel>
+                    <ProgressBar Value="{Binding ProgressPercent}" Maximum="100" Height="4" Margin="0,0,0,4"
+                                 Visibility="{Binding IsRunning, Converter={StaticResource BoolToVisibility}}"/>
+                    <TextBlock Text="{Binding StatusMessage}" FontSize="12" Foreground="#64748B"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Results -->
+            <Border Style="{StaticResource Card}">
+                <DataGrid ItemsSource="{Binding Results}" AutoGenerateColumns="False"
+                          CanUserAddRows="False" HeadersVisibility="Column"
+                          GridLinesVisibility="Horizontal" BorderThickness="0"
+                          Background="Transparent" MaxHeight="420">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="File"      Binding="{Binding FileName}"     Width="*"   IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Status"    Binding="{Binding Status}"        Width="100" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Time (ms)" Binding="{Binding ProcessingMs}"  Width="80"  IsReadOnly="True"/>
+                        <DataGridTextColumn Header="Error"     Binding="{Binding Error}"          Width="300" IsReadOnly="True"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
