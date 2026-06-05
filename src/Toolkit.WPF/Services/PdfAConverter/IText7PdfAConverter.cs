@@ -34,34 +34,33 @@ public sealed class IText7PdfAConverter : IPdfAConverter
 
             var tempPath = outputPath + ".tmp";
 
-            using (var reader = new PdfReader(sourcePath))
-            using (var writer = new PdfWriter(tempPath))
-            using (var pdfADoc = new PdfADocument(writer, PdfAConformanceLevel.PDF_A_2B, intent))
-            {
-                using var srcDoc = new ITextPdfDocument(reader);
-                srcDoc.CopyPagesTo(1, srcDoc.GetNumberOfPages(), pdfADoc);
+            using var reader  = new PdfReader(sourcePath);
+            using var srcDoc  = new ITextPdfDocument(reader);
+            using var writer  = new PdfWriter(tempPath);
+            using var pdfADoc = new PdfADocument(writer, PdfAConformanceLevel.PDF_A_2B, intent);
 
-                var srcInfo      = srcDoc.GetDocumentInfo();
-                var origTitle    = srcInfo.GetTitle();
-                var origAuthor   = srcInfo.GetAuthor();
-                var origSubject  = srcInfo.GetSubject();
-                var origKeywords = srcInfo.GetKeywords() ?? string.Empty;
+            srcDoc.CopyPagesTo(1, srcDoc.GetNumberOfPages(), pdfADoc);
 
-                var dstInfo = pdfADoc.GetDocumentInfo();
-                dstInfo.SetTitle(options.TitleOverride   ?? origTitle   ?? string.Empty);
-                dstInfo.SetAuthor(options.AuthorOverride  ?? origAuthor  ?? string.Empty);
-                dstInfo.SetSubject(options.SubjectOverride ?? origSubject ?? string.Empty);
+            var srcInfo      = srcDoc.GetDocumentInfo();
+            var origTitle    = srcInfo.GetTitle();
+            var origAuthor   = srcInfo.GetAuthor();
+            var origSubject  = srcInfo.GetSubject();
+            var origKeywords = srcInfo.GetKeywords() ?? string.Empty;
 
-                var newKeywords = string.IsNullOrWhiteSpace(origKeywords)
-                    ? ConvertedTag
-                    : origKeywords.Contains(ConvertedTag)
-                        ? origKeywords
-                        : $"{origKeywords}; {ConvertedTag}";
-                dstInfo.SetKeywords(newKeywords);
+            var dstInfo = pdfADoc.GetDocumentInfo();
+            dstInfo.SetTitle(options.TitleOverride   ?? origTitle   ?? string.Empty);
+            dstInfo.SetAuthor(options.AuthorOverride  ?? origAuthor  ?? string.Empty);
+            dstInfo.SetSubject(options.SubjectOverride ?? origSubject ?? string.Empty);
 
-                // Ensure at least one embedded font exists in the output document
-                EmbedFallbackFont(pdfADoc);
-            }
+            var newKeywords = string.IsNullOrWhiteSpace(origKeywords)
+                ? ConvertedTag
+                : origKeywords.Contains(ConvertedTag)
+                    ? origKeywords
+                    : $"{origKeywords}; {ConvertedTag}";
+            dstInfo.SetKeywords(newKeywords);
+
+            // Ensure at least one embedded font exists in the output document
+            EmbedFallbackFont(pdfADoc);
 
             if (File.Exists(outputPath)) File.Delete(outputPath);
             File.Move(tempPath, outputPath);
@@ -95,6 +94,7 @@ public sealed class IText7PdfAConverter : IPdfAConverter
 
     private static void EmbedFallbackFont(PdfADocument doc)
     {
+        if (doc.GetNumberOfPages() == 0) return;
         var font = PdfFontFactory.CreateFont(
             iText.IO.Font.Constants.StandardFonts.HELVETICA,
             PdfFontFactory.EmbeddingStrategy.FORCE_EMBEDDED);
