@@ -7,6 +7,7 @@
         xmlns:preproc="clr-namespace:Toolkit.WPF.Features.ImagePreprocessing"
         xmlns:ocr="clr-namespace:Toolkit.WPF.Features.Ocr"
         xmlns:train="clr-namespace:Toolkit.WPF.Features.OcrTraining"
+        xmlns:pdfa="clr-namespace:Toolkit.WPF.Features.PdfAConverter"
         Title="24HCV Toolkit" Height="900" Width="1600"
         Background="{StaticResource SurfaceBrush}"
         WindowStartupLocation="CenterScreen">
@@ -26,6 +27,9 @@
         </DataTemplate>
         <DataTemplate DataType="{x:Type train:OcrTrainingViewModel}">
             <train:OcrTrainingView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type pdfa:PdfAConverterViewModel}">
+            <pdfa:PdfAConverterView/>
         </DataTemplate>
     </Window.Resources>
 
@@ -66,6 +70,9 @@
                     <Button Content="🧠  OCR Training"
                             Style="{StaticResource NavButton}"
                             Command="{Binding NavigateToOcrTrainingCommand}"/>
+                    <Button Content="📋  PDF/A Converter"
+                            Style="{StaticResource NavButton}"
+                            Command="{Binding NavigateToPdfAConverterCommand}"/>
                 </StackPanel>
             </DockPanel>
         </Border>

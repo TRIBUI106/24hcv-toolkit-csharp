@@ -3,12 +3,14 @@ using Toolkit.WPF.Features.BatchRenaming;
 using Toolkit.WPF.Features.ImagePreprocessing;
 using Toolkit.WPF.Features.Ocr;
 using Toolkit.WPF.Features.OcrTraining;
+using Toolkit.WPF.Features.PdfAConverter;
 using Toolkit.WPF.Features.PdfAnalysis;
 using Toolkit.WPF.Navigation;
 using Toolkit.WPF.Services.BatchRenaming;
 using Toolkit.WPF.Services.ImagePreprocessing;
 using Toolkit.WPF.Services.Ocr;
 using Toolkit.WPF.Services.OcrTraining;
+using Toolkit.WPF.Services.PdfAConverter;
 using Toolkit.WPF.Services.PdfAnalysis;
 
 namespace Toolkit.WPF;
@@ -29,6 +31,10 @@ public static class DependencyInjection
         // PDF
         services.AddTransient<IPdfReader, PdfSharpReader>();
         services.AddTransient<IPdfMetadataWriter, PdfSharpMetadataWriter>();
+
+        // PDF/A Conversion
+        services.AddTransient<IPdfAConverter, IText7PdfAConverter>();
+        services.AddTransient<PdfAConversionService>();
 
         // Image processing
         services.AddTransient<IImageProcessor, OpenCvImageProcessor>();
@@ -56,6 +62,7 @@ public static class DependencyInjection
         services.AddSingleton<ImagePreprocessingViewModel>();
         services.AddSingleton<OcrViewModel>();
         services.AddSingleton<OcrTrainingViewModel>();
+        services.AddSingleton<PdfAConverterViewModel>();
         services.AddSingleton<MainViewModel>();
 
         // ── Windows ───────────────────────────────────────────────────────────
