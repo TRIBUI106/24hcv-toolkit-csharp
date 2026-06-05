@@ -60,9 +60,7 @@ public sealed class IText7PdfAConverter : IPdfAConverter
                 dstInfo.SetKeywords(newKeywords);
 
                 // Ensure at least one embedded font exists in the output document
-                _ = PdfFontFactory.CreateFont(
-                    iText.IO.Font.Constants.StandardFonts.HELVETICA,
-                    PdfFontFactory.EmbeddingStrategy.FORCE_EMBEDDED);
+                EmbedFallbackFont(pdfADoc);
             }
 
             if (File.Exists(outputPath)) File.Delete(outputPath);
@@ -95,4 +93,11 @@ public sealed class IText7PdfAConverter : IPdfAConverter
         }
     }
 
+    private static void EmbedFallbackFont(PdfADocument doc)
+    {
+        var font = PdfFontFactory.CreateFont(
+            iText.IO.Font.Constants.StandardFonts.HELVETICA,
+            PdfFontFactory.EmbeddingStrategy.FORCE_EMBEDDED);
+        doc.GetPage(1).GetResources().AddFont(doc, font);
+    }
 }
