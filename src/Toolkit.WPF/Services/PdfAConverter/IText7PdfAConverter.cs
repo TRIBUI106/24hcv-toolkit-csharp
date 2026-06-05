@@ -74,6 +74,13 @@ public sealed class IText7PdfAConverter : IPdfAConverter
                 ProcessingMs = sw.ElapsedMilliseconds
             });
         }
+        catch (OperationCanceledException)
+        {
+            sw.Stop();
+            var tempPath = outputPath + ".tmp";
+            if (File.Exists(tempPath)) File.Delete(tempPath);
+            throw;
+        }
         catch (Exception ex)
         {
             sw.Stop();

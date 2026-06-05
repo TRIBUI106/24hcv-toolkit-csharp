@@ -60,7 +60,7 @@
                             Command="{Binding NavigateToPdfAnalysisCommand}"/>
                     <Button Content="📁  Batch Renaming"
                             Style="{StaticResource NavButton}"
-                            Command="{Binding NavigateToBatchRenamingCommand}" Click="Button_Click"/>
+                            Command="{Binding NavigateToBatchRenamingCommand}"/>
                     <Button Content="🖼️  Image Preprocessing"
                             Style="{StaticResource NavButton}"
                             Command="{Binding NavigateToPreprocessingCommand}"/>

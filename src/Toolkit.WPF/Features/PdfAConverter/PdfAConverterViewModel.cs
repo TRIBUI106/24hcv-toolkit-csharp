@@ -34,7 +34,10 @@ public sealed partial class PdfAConverterViewModel : ViewModelBase
     {
         var d = new System.Windows.Forms.FolderBrowserDialog
             { Description = "Select root folder containing PDFs" };
-        if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+        var owner = new System.Windows.Forms.NativeWindow();
+        owner.AssignHandle(new System.Windows.Interop.WindowInteropHelper(
+            System.Windows.Application.Current.MainWindow).Handle);
+        if (d.ShowDialog(owner) == System.Windows.Forms.DialogResult.OK)
             RootFolder = d.SelectedPath;
     }
 
@@ -43,7 +46,10 @@ public sealed partial class PdfAConverterViewModel : ViewModelBase
     {
         var d = new System.Windows.Forms.FolderBrowserDialog
             { Description = "Select output folder" };
-        if (d.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+        var owner = new System.Windows.Forms.NativeWindow();
+        owner.AssignHandle(new System.Windows.Interop.WindowInteropHelper(
+            System.Windows.Application.Current.MainWindow).Handle);
+        if (d.ShowDialog(owner) == System.Windows.Forms.DialogResult.OK)
             OutputFolder = d.SelectedPath;
     }
 
@@ -77,25 +83,38 @@ public sealed partial class PdfAConverterViewModel : ViewModelBase
             StatusMessage   = $"[{p.CompletedItems}/{p.TotalItems}] {p.CurrentItemName}";
         });
 
-        var result = await _service.ConvertFolderAsync(RootFolder, options, reporter, _cts.Token);
-
-        IsRunning = false;
-
-        if (result.IsSuccess)
+        try
         {
-            var items = result.Value!;
-            foreach (var r in items)
-                Results.Add(new PdfAResultRow(r));
+            var result = await _service.ConvertFolderAsync(RootFolder, options, reporter, _cts.Token);
 
-            var converted = items.Count(r => r.Status == ConversionStatus.Converted);
-            var skipped   = items.Count(r => r.Status == ConversionStatus.Skipped);
-            var errors    = items.Count(r => r.Status == ConversionStatus.Error);
-            StatusMessage   = $"Done — {converted} converted, {skipped} skipped, {errors} error(s).";
-            ProgressPercent = 100;
+            if (result.IsSuccess)
+            {
+                var items = result.Value!;
+                foreach (var r in items)
+                    Results.Add(new PdfAResultRow(r));
+
+                var converted = items.Count(r => r.Status == ConversionStatus.Converted);
+                var skipped   = items.Count(r => r.Status == ConversionStatus.Skipped);
+                var errors    = items.Count(r => r.Status == ConversionStatus.Error);
+                StatusMessage   = $"Done — {converted} converted, {skipped} skipped, {errors} error(s).";
+                ProgressPercent = 100;
+            }
+            else
+            {
+                StatusMessage = $"Error: {result.ErrorMessage}";
+            }
         }
-        else
+        catch (OperationCanceledException)
         {
-            StatusMessage = $"Error: {result.ErrorMessage}";
+            StatusMessage = "Cancelled.";
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Unexpected error: {ex.Message}";
+        }
+        finally
+        {
+            IsRunning = false;
         }
     }
 
